@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEGUA GT | Estación Central</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+ 
+    <header>
+        <div class="logo">FEGUA GT</div>
+        <button type="button" id="btn-open-login">Acceso Admin</button>
+    </header>
+ 
+    <main>
+ 
+        <!--  LOGIN ADMIN  -->
+        <div id="modal-login" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="login-titulo">
+            <div class="modal-content">
+                <button type="button" class="close-btn" id="btn-close-login" aria-label="Cerrar">&times;</button>
+                <h3 id="login-titulo">Acceso Admin</h3>
+                <form id="form-login">
+                    <label for="admin-user">Usuario</label>
+                    <input type="text" id="admin-user" required placeholder="admin" autocomplete="username">
+                    <label for="admin-pass">Contraseña</label>
+                    <input type="password" id="admin-pass" required placeholder="2026" autocomplete="current-password">
+                    <button type="submit">Ingresar</button>
+                </form>
+                <p id="login-error" class="error-msg hidden">Credenciales incorrectas. Usuario: admin, contraseña: 2026.</p>
+            </div>
+        </div>
+ 
+        <!--  PANEL ADMIN  -->
+        <section id="sec-admin" class="section hidden">
+            <h2>Panel de administrador</h2>
+ 
+            <div id="admin-stats" class="stats-grid"></div>
+ 
+            <h3>Viajeros y evaluaciones</h3>
+            <div class="tabla-wrap">
+                <table id="admin-tabla">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Viajero</th>
+                            <th>Documento</th>
+                            <th>Ruta</th>
+                            <th>Fecha de viaje</th>
+                            <th>Puntaje</th>
+                            <th>Estado</th>
+                            <th>Comentario</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-tbody"></tbody>
+                </table>
+            </div>
+ 
+            <div class="acciones">
+                <button type="button" id="btn-vaciar" class="btn-peligro">Borrar todos los datos</button>
+                <button type="button" id="btn-logout">Cerrar sesión</button>
+            </div>
+        </section>
+ 
+        <!--   INICIO: ESTACIÓN, TARIFAS, RUTAS, REGISTRO  -->
+        <section id="sec-inicio" class="section">
+ 
+            <div class="hero">
+                <img src="img/estacion.jpg" alt="Fachada de la Estación Central de trenes de Ciudad de Guatemala">
+                <div class="hero-texto">
+                    <h2>Estación Central FEGUA GT</h2>
+                    <p>Viaja en tren desde la Ciudad de Guatemala hacia Antigua, Quetzaltenango, Petén y el Caribe.
+                       Elige tu ruta, regístrate y recibe tu boleto en minutos.</p>
+                    <p>
+                        <a href="https://es.wikipedia.org/wiki/Ferrocarriles_de_Guatemala" target="_blank" rel="noopener">Historia de los ferrocarriles de Guatemala</a>
+                    </p>
+                </div>
+            </div>
+ 
+            <h3>Servicios de la estación</h3>
+            <ul class="lista-servicios">
+                <li>Taquilla de 6:00 a 20:00 h</li>
+                <li>Salas de espera con aire acondicionado</li>
+                <li>Cafetería y tienda de recuerdos</li>
+                <li>Acceso para personas con movilidad reducida</li>
+            </ul>
+ 
+            <h3>Tarifas</h3>
+            <div class="tabla-wrap">
+                <table id="tabla-tarifas">
+                    <thead>
+                        <tr>
+                            <th>Ruta</th>
+                            <th>Trayecto</th>
+                            <th>Horario</th>
+                            <th>Turista</th>
+                            <th>Ejecutiva</th>
+                            <th>Primera Clase</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tarifas-body"></tbody>
+                </table>
+            </div>
+            <p class="nota"></p>
+ 
+            <h2 class="titulo-seccion">Seleccione su ruta</h2>
+            <div id="rutas-grid" class="rutas-grid"></div>
+ 
+            <div id="paso-registro" class="paso-registro hidden">
+                <h3>Datos del viajero</h3>
+                <p class="resumen-txt">Viaje: <strong id="resumen-ruta-txt">-</strong> (<span id="resumen-horario-txt">-</span>)</p>
+ 
+                <form id="form-registro" novalidate>
+                    <div class="form-group">
+                        <label for="reg-nombre">Nombre completo</label>
+                        <input type="text" id="reg-nombre" required minlength="3" placeholder="Ej: Carlos Mendoza" autocomplete="name">
+                        <small class="error-campo" id="err-nombre"></small>
+                    </div>
+ 
+                    <div class="form-group">
+                        <label for="reg-documento">DPI / Pasaporte (solo números)</label>
+                        <input type="text" id="reg-documento" required inputmode="numeric" placeholder="Ej: 2541098710101">
+                        <small class="error-campo" id="err-documento"></small>
+                    </div>
+ 
+                    <div class="form-group">
+                        <label for="reg-email">Correo electrónico</label>
+                        <input type="email" id="reg-email" required placeholder="correo@ejemplo.com" autocomplete="email">
+                        <small class="error-campo" id="err-email"></small>
+                    </div>
+ 
+                    <div class="form-fila">
+                        <div class="form-group">
+                            <label for="reg-fecha">Fecha de viaje</label>
+                            <input type="date" id="reg-fecha" required>
+                            <small class="error-campo" id="err-fecha"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-tipo">Tipo de viajero</label>
+                            <select id="reg-tipo" required></select>
+                        </div>
+                    </div>
+ 
+                    <div class="form-group">
+                        <label for="reg-clase">Clase de asiento</label>
+                        <select id="reg-clase" required></select>
+                    </div>
+ 
+                    <p class="total-estimado">Total a pagar: <strong id="total-estimado">Q 0.00</strong></p>
+ 
+                    <button type="submit">Ver resumen del registro</button>
+                </form>
+            </div>
+        </section>
+ 
+        <!--  RESUMEN DEL REGISTRO  -->
+        <section id="sec-resumen" class="section hidden">
+            <h2>Revise sus datos</h2>
+            <dl id="resumen-datos" class="lista-datos">
+                <dt>Nombre</dt><dd data-campo="nombre"></dd>
+                <dt>Documento</dt><dd data-campo="documento"></dd>
+                <dt>Correo</dt><dd data-campo="email"></dd>
+                <dt>Tipo de viajero</dt><dd data-campo="tipo"></dd>
+                <dt>Ruta</dt><dd data-campo="ruta"></dd>
+                <dt>Fecha de viaje</dt><dd data-campo="fechaViaje"></dd>
+                <dt>Horario</dt><dd><span data-campo="salida"></span> - <span data-campo="llegada"></span></dd>
+                <dt>Clase</dt><dd data-campo="clase"></dd>
+                <dt>Total</dt><dd data-campo="total"></dd>
+            </dl>
+            <div class="acciones">
+                <button type="button" id="btn-editar" class="btn-secundario">Editar datos</button>
+                <button type="button" id="btn-confirmar">Confirmar y ver boleto</button>
+            </div>
+        </section>
+ 
+        <!--   BOLETO  -->
+        <section id="sec-boleto" class="section hidden">
+            <h2>Boleto emitido</h2>
+ 
+            <div id="boleto" class="ticket-box">
+                <div class="ticket-cabecera">
+                    <span>Código</span>
+                    <strong data-campo="codigo"></strong>
+                </div>
+                <p><strong>Pasajero:</strong> <span data-campo="nombre"></span></p>
+                <p><strong>DPI / Pasaporte:</strong> <span data-campo="documento"></span></p>
+                <p><strong>Ruta:</strong> <span data-campo="ruta"></span></p>
+                <p><strong>Trayecto:</strong> <span data-campo="trayecto"></span></p>
+                <p><strong>Fecha de viaje:</strong> <span data-campo="fechaViaje"></span></p>
+                <p><strong>Hora de salida:</strong> <span data-campo="salida"></span></p>
+                <p><strong>Hora de llegada:</strong> <span data-campo="llegada"></span></p>
+                <p><strong>Andén:</strong> <span data-campo="anden"></span></p>
+                <p><strong>Clase:</strong> <span data-campo="clase"></span></p>
+                <p><strong>Total pagado:</strong> <span data-campo="total"></span></p>
+            </div>
+ 
+            <h3>Información de su viaje</h3>
+            <figure class="figura-ruta">
+                <img id="boleto-imagen" src="img/antigua.jpg" alt="Imagen del destino">
+                <figcaption id="boleto-imagen-pie"></figcaption>
+            </figure>
+ 
+            <ul class="enlaces">
+                <li><a id="enlace-destino" href="#" target="_blank" rel="noopener">Conozca su destino</a></li>
+                <li><a href="https://www.google.com/maps/search/?api=1&query=Estacion+Central+Ferrocarril+Ciudad+de+Guatemala" target="_blank" rel="noopener">Cómo llegar a la estación (Google Maps)</a></li>
+                <li><a href="https://es.wikipedia.org/wiki/Ferrocarriles_de_Guatemala" target="_blank" rel="noopener">Sobre Ferrocarriles de Guatemala</a></li>
+            </ul>
+ 
+            <h3>Normas de seguridad</h3>
+            <div class="media-item">
+                <iframe src="https://www.youtube.com/embed/SZ3T_xEHgB4" title="Normas de seguridad en el tren" allowfullscreen loading="lazy"></iframe>
+            </div>
+ 
+            <div class="acciones">
+                <button type="button" id="btn-imprimir-boleto" class="btn-secundario">Imprimir boleto</button>
+                <button type="button" id="btn-ir-evaluacion">Ir a la evaluación de satisfacción</button>
+            </div>
+        </section>
+ 
+        <!--  EVALUACIÓN  -->
+        <section id="sec-evaluacion" class="section hidden">
+            <h2>Evaluación del servicio</h2>
+            <form id="form-evaluacion">
+ 
+                <fieldset class="question-block">
+                    <legend>1. Puntualidad en la salida</legend>
+                    <div class="options-inline">
+                        <label><input type="radio" name="p1" value="Excelente" required> Excelente</label>
+                        <label><input type="radio" name="p1" value="Buena"> Buena</label>
+                        <label><input type="radio" name="p1" value="Regular"> Regular</label>
+                    </div>
+                </fieldset>
+ 
+                <fieldset class="question-block">
+                    <legend>2. Áreas de la estación que utilizó (puede marcar varias)</legend>
+                    <div class="options-inline">
+                        <label><input type="checkbox" name="p2" value="Taquilla"> Taquilla</label>
+                        <label><input type="checkbox" name="p2" value="Salas de espera"> Salas de espera</label>
+                        <label><input type="checkbox" name="p2" value="Cafetería"> Cafetería</label>
+                    </div>
+                </fieldset>
+ 
+                <div class="question-block">
+                    <label for="p3">3. Frecuencia de uso</label>
+                    <select id="p3" name="p3" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Primera vez">Primera vez</option>
+                        <option value="Ocasional">Ocasional</option>
+                        <option value="Frecuente">Frecuente</option>
+                    </select>
+                </div>
+ 
+                <div class="question-block">
+                    <label for="p4">4. Limpieza del vagón: <output id="p4-valor">5</output> de 5</label>
+                    <input type="range" id="p4" name="p4" min="1" max="5" value="5">
+                </div>
+ 
+                <fieldset class="question-block">
+                    <legend>5. ¿Nos recomendaría?</legend>
+                    <div class="options-inline">
+                        <label><input type="radio" name="p5" value="Sí" required> Sí</label>
+                        <label><input type="radio" name="p5" value="Tal vez"> Tal vez</label>
+                        <label><input type="radio" name="p5" value="No"> No</label>
+                    </div>
+                </fieldset>
+ 
+                <div class="question-block">
+                    <label for="p6">6. Atención del personal (seleccione una opción de la lista)</label>
+                    <select id="p6" name="p6" size="4" required>
+                        <option value="Excelente">Excelente</option>
+                        <option value="Buena">Buena</option>
+                        <option value="Regular">Regular</option>
+                        <option value="Deficiente">Deficiente</option>
+                    </select>
+                </div>
+ 
+                <div class="question-block">
+                    <label for="p7">7. Comentarios o sugerencias (opcional)</label>
+                    <textarea id="p7" name="p7" rows="3" maxlength="300" placeholder="Escriba aquí..."></textarea>
+                </div>
+ 
+                <button type="submit">Enviar evaluación</button>
+            </form>
+        </section>
+ 
+        <!--  RESULTADO Y DIPLOMA  -->
+        <section id="sec-resultado" class="section hidden">
+            <h2>Resultado de su evaluación</h2>
+ 
+            <div class="resultado-no-imprimir">
+                <div class="puntaje-box">
+                    <p class="puntaje-num"><span id="puntaje-valor">0</span> / 100</p>
+                    <div class="barra" aria-hidden="true"><div id="barra-relleno" class="barra-relleno"></div></div>
+                    <p id="resultado-mensaje" class="resultado-mensaje"></p>
+                </div>
+                <ul id="resultado-detalle" class="resumen-box"></ul>
+            </div>
+ 
+            <div id="diploma" class="diploma hidden">
+                <p class="diploma-sub">FEGUA GT · Estación Central</p>
+                <h3 class="diploma-titulo">Diploma de aprobación</h3>
+                <p>Se otorga a</p>
+                <h2 id="diploma-nombre" class="diploma-nombre">-</h2>
+                <p>por completar y aprobar la evaluación de satisfacción del servicio
+                   con un puntaje de <strong id="diploma-puntaje"></strong> / 100.</p>
+                <p class="diploma-pie">Ruta: <span id="diploma-ruta"></span> · Fecha: <span id="diploma-fecha"></span> · Código: <span id="diploma-codigo"></span></p>
+            </div>
+ 
+            <div class="acciones resultado-no-imprimir">
+                <button type="button" id="btn-imprimir-diploma" class="btn-secundario hidden">Imprimir / guardar diploma en PDF</button>
+                <button type="button" id="btn-repetir" class="btn-secundario hidden">Repetir evaluación</button>
+                <button type="button" id="btn-nuevo">Nuevo registro</button>
+            </div>
+        </section>
+    </main>
+ 
+    <script src="app.js"></script>
+</body>
+</html>
